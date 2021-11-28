@@ -51,7 +51,7 @@ resource "kubernetes_namespace" "devops-challenge" {
 }
 
 #criar deployment para teste
-resource "kubernetes_deployment" "simple-nginx" {
+resource "kubernetes_deployment" "simple-nginx-deploy" {
   metadata {
     name = simple_nginx
     namespace = kubernetes_namespace.devops-challenge
@@ -98,7 +98,7 @@ resource "kubernetes_deployment" "simple-nginx" {
 }
 
 #cria service para expor nginx
-resource "kubernetes_service" "simple_nginx" {
+resource "kubernetes_service" "simple-nginx-service" {
   metadata {
     name = simple_nginx
     namespace = kubernetes_namespace.devops-challenge
@@ -110,7 +110,7 @@ resource "kubernetes_service" "simple_nginx" {
       nodePort = 30080
     }
     selector {
-      app = kubernetes_deployment.simple_nginx.metadata.labels.app
+      app = kubernetes_deployment.simple-nginx-deploy.metadata.labels.app
     }
   }
   depends_on = [resource.kubernetes_namespace]
