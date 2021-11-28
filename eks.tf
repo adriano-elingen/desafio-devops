@@ -23,7 +23,7 @@ module "eks" {
   worker_groups = [
     {
       instance_type = "a1.medium"
-      asg_min_size  = 2
+      asg_min_size  = 1
       asg_max_size  = 5
     }
   ]
