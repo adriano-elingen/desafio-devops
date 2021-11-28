@@ -112,7 +112,7 @@ resource "kubernetes_service" "simple-nginx-service" {
       node_port = 30080
     }
     selector = {
-      app = kubernetes_deployment.simple-nginx-deploy.metadata.labels.app
+      app = kubernetes_deployment.simple-nginx-deploy.metadata.0.labels.app
     }
   }
   depends_on = [resource.kubernetes_namespace.devops-challenge]
