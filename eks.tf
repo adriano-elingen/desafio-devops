@@ -76,25 +76,26 @@ resource "kubernetes_deployment" "simple-nginx-deploy" {
         container {
           image = "nginx:latest"
           name = "simple_nginx"
-        }
-        liveness_probe {
-            http_get {
-              path = "/nginx_status"
-              port = 80
+          liveness_probe {
+              http_get {
+                path = "/nginx_status"
+                port = 80
 
-              http_header {
-                name  = "X-Custom-Header"
-                value = "Awesome"
+                http_header {
+                  name  = "X-Custom-Header"
+                  value = "Awesome"
+                }
               }
-            }
 
-            initial_delay_seconds = 3
-            period_seconds        = 3
-          }
+              initial_delay_seconds = 3
+              period_seconds        = 3
+            }
+        }
+
       }
     }
   }
-  depends_on = [resource.kubernetes_namespace]
+  depends_on = [resource.kubernetes_namespace.devops-challenge]
 }
 
 #cria service para expor nginx
@@ -106,10 +107,11 @@ resource "kubernetes_service" "simple-nginx-service" {
   spec {
     type = "NodePort"
     port {
+      port = 80
       target_port = 80
-      nodePort = 30080
+      node_port = 30080
     }
-    selector {
+    selector = {
       app = kubernetes_deployment.simple-nginx-deploy.metadata.labels.app
     }
   }
