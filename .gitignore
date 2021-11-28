@@ -1,0 +1,9 @@
+# Diretorio .terraform
+**/.terraform/*
+
+# arquivos de estado
+*.tfstate
+*.tfstate.*
+
+# logs
+crash.log
