@@ -54,7 +54,7 @@ resource "kubernetes_namespace" "devops-challenge" {
 resource "kubernetes_deployment" "simple-nginx-deploy" {
   metadata {
     name = "simple_nginx"
-    namespace = kubernetes_namespace.devops-challenge
+    namespace = var.project_name
     labels = {
       app = "simple_nginx"
     }
@@ -101,10 +101,10 @@ resource "kubernetes_deployment" "simple-nginx-deploy" {
 resource "kubernetes_service" "simple-nginx-service" {
   metadata {
     name = "simple_nginx"
-    namespace = kubernetes_namespace.devops-challenge
+    namespace = var.project_name
   }
   spec {
-    type = NodePort
+    type = "NodePort"
     port {
       target_port = 80
       nodePort = 30080
@@ -113,5 +113,5 @@ resource "kubernetes_service" "simple-nginx-service" {
       app = kubernetes_deployment.simple-nginx-deploy.metadata.labels.app
     }
   }
-  depends_on = [resource.kubernetes_namespace]
+  depends_on = [resource.kubernetes_namespace.devops-challenge]
 }
