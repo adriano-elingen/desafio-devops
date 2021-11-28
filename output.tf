@@ -1,4 +1,4 @@
-output "vpc_id" {
-  description = "ID do VPC do projeto"
-  value = module.vpc.vpc_id
+output "eks_endpoint" {
+  description = "Endpoint do cluster EKS"
+  value = module.eks.cluster_endpoint
 }
