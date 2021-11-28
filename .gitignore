@@ -7,3 +7,9 @@
 
 # logs
 crash.log
+
+#  kubeconfig
+kubeconfig*
+
+#  arquivos de lock
+*.lock.*

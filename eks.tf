@@ -28,3 +28,90 @@ module "eks" {
     }
   ]
 }
+
+# cria kubeconfig
+resource "null_resource" "kubeconfig" {
+  provisioner "local-exec" {
+    command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${var.project_name} --profile default"
+  }
+  depends_on = [module.eks.cluster_id]
+}
+
+# criar namespace
+resource "kubernetes_namespace" "devops-challenge" {
+  metadata {
+    annotations = {
+      name = var.project_name
+    }
+    name = var.project_name
+  }
+
+  depends_on = [module.eks.cluster_id]
+
+}
+
+#criar deployment para teste
+resource "kubernetes_deployment" "simple-nginx" {
+  metadata {
+    name = simple_nginx
+    namespace = kubernetes_namespace.devops-challenge
+    labels = {
+      app = simple_nginx
+    }
+  }
+  spec {
+    replicas = 3
+    selector {
+      match_labels = {
+        app = simple_nginx
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = simple_nginx
+        }
+      }
+      spec {
+        container {
+          image = "nginx:latest"
+          name = simple_nginx
+        }
+        liveness_probe {
+            http_get {
+              path = "/nginx_status"
+              port = 80
+
+              http_header {
+                name  = "X-Custom-Header"
+                value = "Awesome"
+              }
+            }
+
+            initial_delay_seconds = 3
+            period_seconds        = 3
+          }
+      }
+    }
+  }
+  depends_on = [resource.kubernetes_namespace]
+}
+
+#cria service para expor nginx
+resource "kubernetes_service" "simple_nginx" {
+  metadata {
+    name = simple_nginx
+    namespace = kubernetes_namespace.devops-challenge
+  }
+  spec {
+    type = NodePort
+    port {
+      target_port = 80
+      nodePort = 30080
+    }
+    selector {
+      app = kubernetes_deployment.simple_nginx.metadata.labels.app
+    }
+  }
+  depends_on = [resource.kubernetes_namespace]
+}
