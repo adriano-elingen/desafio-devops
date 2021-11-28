@@ -53,29 +53,29 @@ resource "kubernetes_namespace" "devops-challenge" {
 #criar deployment para teste
 resource "kubernetes_deployment" "simple-nginx-deploy" {
   metadata {
-    name = "simple_nginx"
+    name = "simples-nginx"
     namespace = var.project_name
     labels = {
-      app = "simple_nginx"
+      app = "simples-nginx"
     }
   }
   spec {
     replicas = 3
     selector {
       match_labels = {
-        app = "simple_nginx"
+        app = "simples-nginx"
       }
     }
     template {
       metadata {
         labels = {
-          app = "simple_nginx"
+          app = "simples-nginx"
         }
       }
       spec {
         container {
           image = "nginx:latest"
-          name = "simple_nginx"
+          name = "simples-nginx"
           liveness_probe {
               http_get {
                 path = "/nginx_status"
@@ -101,7 +101,7 @@ resource "kubernetes_deployment" "simple-nginx-deploy" {
 #cria service para expor nginx
 resource "kubernetes_service" "simple-nginx-service" {
   metadata {
-    name = "simple_nginx"
+    name = "simples-nginx"
     namespace = var.project_name
   }
   spec {
