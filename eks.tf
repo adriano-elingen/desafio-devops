@@ -22,7 +22,7 @@ module "eks" {
 
   worker_groups = [
     {
-      instance_type = "a1.medium"
+      instance_type = "t3.large"
       asg_min_size  = 1
       asg_max_size  = 5
     }
@@ -60,7 +60,7 @@ resource "kubernetes_deployment" "simple-nginx-deploy" {
     }
   }
   spec {
-    replicas = 3
+    replicas = 1
     selector {
       match_labels = {
         app = "simple-nginx"
