@@ -23,7 +23,7 @@ module "eks" {
   worker_groups = [
     {
       instance_type = "t2.micro"
-      asg_min_size  = 1
+      asg_min_size  = 3
       asg_max_size  = 5
     }
   ]
@@ -53,29 +53,29 @@ resource "kubernetes_namespace" "devops-challenge" {
 #criar deployment para teste
 resource "kubernetes_deployment" "simple-nginx-deploy" {
   metadata {
-    name = "simples-nginx"
+    name = "simple-nginx"
     namespace = var.project_name
     labels = {
-      app = "simples-nginx"
+      app = "simple-nginx"
     }
   }
   spec {
     replicas = 3
     selector {
       match_labels = {
-        app = "simples-nginx"
+        app = "simple-nginx"
       }
     }
     template {
       metadata {
         labels = {
-          app = "simples-nginx"
+          app = "simple-nginx"
         }
       }
       spec {
         container {
           image = "nginx:latest"
-          name = "simples-nginx"
+          name = "simple-nginx"
           liveness_probe {
               http_get {
                 path = "/nginx_status"
@@ -101,7 +101,7 @@ resource "kubernetes_deployment" "simple-nginx-deploy" {
 #cria service para expor nginx
 resource "kubernetes_service" "simple-nginx-service" {
   metadata {
-    name = "simples-nginx"
+    name = "simple-nginx"
     namespace = var.project_name
   }
   spec {
