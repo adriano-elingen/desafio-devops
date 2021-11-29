@@ -91,11 +91,10 @@ resource "kubernetes_service" "simple-nginx-service" {
     namespace = var.project_name
   }
   spec {
-    type = "NodePort"
+    type = "LoadBalancer"
     port {
       port = 80
       target_port = 80
-      node_port = 30080
     }
     selector = {
       app = kubernetes_deployment.simple-nginx-deploy.metadata.0.labels.app
